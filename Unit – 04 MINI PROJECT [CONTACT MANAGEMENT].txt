@@ -1,0 +1,115 @@
+import java.util.*;
+
+class Contact {
+    String name;
+    String phone;
+
+    Contact(String name, String phone) {
+        this.name = name;
+        this.phone = phone;
+    }
+
+    public String toString() {
+        return "Name: " + name + ", Phone: " + phone;
+    }
+}
+
+class ContactNotFoundException extends Exception {
+    ContactNotFoundException(String message) {
+        super(message);
+    }
+}
+
+class ContactManager<T extends Contact> {
+
+    private List<T> contacts = new ArrayList<>();
+
+    public void addContact(T contact) {
+        contacts.add(contact);
+        System.out.println("Contact added successfully!");
+    }
+
+    public void displayContacts() {
+        if (contacts.isEmpty()) {
+            System.out.println("No contacts available.");
+        } else {
+            for (T c : contacts) {
+                System.out.println(c);
+            }
+        }
+    }
+
+    public T searchContact(String name) throws ContactNotFoundException {
+        for (T c : contacts) {
+            if (c.name.equalsIgnoreCase(name)) {
+                return c;
+            }
+        }
+        throw new ContactNotFoundException("Contact not found!");
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        ContactManager<Contact> manager = new ContactManager<>();
+
+        int choice;
+
+        do {
+            System.out.println("\n===== Contact Management System =====");
+            System.out.println("1. Add Contact");
+            System.out.println("2. Display Contacts");
+            System.out.println("3. Search Contact");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            try {
+
+                switch (choice) {
+
+                    case 1:
+                        System.out.print("Enter Name: ");
+                        String name = sc.nextLine();
+
+                        System.out.print("Enter Phone: ");
+                        String phone = sc.nextLine();
+
+                        manager.addContact(new Contact(name, phone));
+                        break;
+
+                    case 2:
+                        manager.displayContacts();
+                        break;
+
+                    case 3:
+                        System.out.print("Enter name to search: ");
+                        String searchName = sc.nextLine();
+
+                        Contact result = manager.searchContact(searchName);
+                        System.out.println("Found: " + result);
+                        break;
+
+                    case 4:
+                        System.out.println("Exiting...");
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice!");
+
+                }
+
+            } catch (ContactNotFoundException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+
+        } while (choice != 4);
+
+        sc.close();
+    }
+}
