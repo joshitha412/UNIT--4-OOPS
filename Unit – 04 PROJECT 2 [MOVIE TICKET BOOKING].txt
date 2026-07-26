@@ -1,0 +1,97 @@
+import java.util.*;
+
+class SeatNotAvailableException extends Exception {
+    SeatNotAvailableException(String msg) {
+        super(msg);
+    }
+}
+
+class MovieBooking {
+
+    HashMap<String, Integer> shows = new HashMap<>();
+
+    public MovieBooking() {
+        shows.put("Avengers", 5);
+        shows.put("Avatar", 5);
+        shows.put("SpiderMan", 5);
+    }
+
+    public void displayShows() {
+        System.out.println("\nAvailable Shows:");
+        for (Map.Entry<String, Integer> entry : shows.entrySet()) {
+            System.out.println(entry.getKey() + " | Seats Available: " + entry.getValue());
+        }
+    }
+
+    public void bookTicket(String movie, int seats) throws SeatNotAvailableException {
+
+        if (!shows.containsKey(movie)) {
+            System.out.println("Movie not found.");
+            return;
+        }
+
+        int available = shows.get(movie);
+
+        if (seats > available) {
+            throw new SeatNotAvailableException("Seats not available!");
+        }
+
+        shows.put(movie, available - seats);
+        System.out.println("Ticket booked successfully!");
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        MovieBooking mb = new MovieBooking();
+
+        int choice;
+
+        do {
+            System.out.println("\n===== Movie Ticket Booking System =====");
+            System.out.println("1. Show Movies");
+            System.out.println("2. Book Ticket");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            try {
+                switch (choice) {
+
+                    case 1:
+                        mb.displayShows();
+                        break;
+
+                    case 2:
+                        System.out.print("Enter movie name: ");
+                        String movie = sc.nextLine();
+
+                        System.out.print("Enter number of seats: ");
+                        int seats = sc.nextInt();
+                        sc.nextLine();
+
+                        mb.bookTicket(movie, seats);
+                        break;
+
+                    case 3:
+                        System.out.println("Thank you! Visit again.");
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice!");
+                }
+
+            } catch (SeatNotAvailableException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+
+        } while (choice != 3);
+
+        sc.close();
+    }
+}
