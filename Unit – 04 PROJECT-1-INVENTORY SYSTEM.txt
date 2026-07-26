@@ -1,0 +1,105 @@
+import java.util.*;
+
+class ProductNotFoundException extends Exception {
+    ProductNotFoundException(String message) {
+        super(message);
+    }
+}
+
+class Inventory {
+
+    HashMap<String, Integer> stock = new HashMap<>();
+
+    public void addProduct(String name, int quantity) {
+        stock.put(name, quantity);
+        System.out.println("Product added successfully.");
+    }
+
+    public void displayProducts() {
+        if (stock.isEmpty()) {
+            System.out.println("Inventory is empty.");
+            return;
+        }
+
+        for (Map.Entry<String, Integer> entry : stock.entrySet()) {
+            System.out.println("Product: " + entry.getKey() +
+                    " | Quantity: " + entry.getValue());
+        }
+    }
+
+    public void updateStock(String name, int quantity) throws ProductNotFoundException {
+        if (!stock.containsKey(name)) {
+            throw new ProductNotFoundException("Product not found!");
+        }
+
+        stock.put(name, quantity);
+        System.out.println("Stock updated successfully.");
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        Inventory inv = new Inventory();
+
+        int choice;
+
+        do {
+            System.out.println("\n===== Inventory Management System =====");
+            System.out.println("1. Add Product");
+            System.out.println("2. Display Products");
+            System.out.println("3. Update Stock");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            try {
+                switch (choice) {
+
+                    case 1:
+                        System.out.print("Enter product name: ");
+                        String name = sc.nextLine();
+
+                        System.out.print("Enter quantity: ");
+                        int qty = sc.nextInt();
+                        sc.nextLine();
+
+                        inv.addProduct(name, qty);
+                        break;
+
+                    case 2:
+                        inv.displayProducts();
+                        break;
+
+                    case 3:
+                        System.out.print("Enter product name: ");
+                        String pname = sc.nextLine();
+
+                        System.out.print("Enter new quantity: ");
+                        int newQty = sc.nextInt();
+                        sc.nextLine();
+
+                        inv.updateStock(pname, newQty);
+                        break;
+
+                    case 4:
+                        System.out.println("Exiting...");
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice!");
+                }
+
+            } catch (ProductNotFoundException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+
+        } while (choice != 4);
+
+        sc.close();
+    }
+}
